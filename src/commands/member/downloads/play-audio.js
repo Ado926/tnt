@@ -1,5 +1,5 @@
 const { PREFIX } = require(`${BASE_DIR}/config`);
-const { play } = require(`${BASE_DIR}/services/spider-x-api`);
+const { play } = require(`${BASE_DIR}/services/savetube`);
 const { InvalidParameterError } = require(`${BASE_DIR}/errors`);
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
 
     if (fullArgs.includes("http://") || fullArgs.includes("https://")) {
       throw new InvalidParameterError(
-        `Você não pode usar links para baixar músicas! Use ${PREFIX}yt-mp3 link`
+        `Você não pode usar links diretamente! Use ${PREFIX}yt-mp3 link`
       );
     }
 
@@ -45,17 +45,17 @@ module.exports = {
 
       await sendImageFromURL(
         data.thumbnail,
-        `*Título*: ${data.title}
+        `*Título:* ${data.title}
         
-*Descrição*: ${data.description}
-*Duração em segundos*: ${data.total_duration_in_seconds}
-*Canal*: ${data.channel.name}`
+*Descrição:* ${data.description || "N/A"}
+*Duração:* ${data.total_duration_in_seconds} segundos
+*Canal:* ${data.channel.name}`
       );
 
       await sendAudioFromURL(data.url);
     } catch (error) {
-      console.log(error);
-      await sendErrorReply(error.message);
+      console.error(error);
+      await sendErrorReply("Erro ao baixar áudio. Tente novamente.");
     }
   },
 };
